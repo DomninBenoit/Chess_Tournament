@@ -4,10 +4,10 @@ from controllers.tournament_controller import TournamentController
 
 class Application:
     routes = {
-        "homepage": HomePageController.dispatch,
+        "homepage": HomePageController.dispatch(),
         "tournament_management": TournamentController.list(),
-        "add_tournament": TournamentController.create(),
-        "add_player_in_tournament": TournamentController.list_tournaments()
+
+        "add_player_in_tournament": TournamentController.list_tournaments(),
     }
 
     def __init__(self) -> None:

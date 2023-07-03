@@ -4,12 +4,10 @@ from views.home_view import HomeView
 class HomePageController:
 
     @classmethod
-    def dispatch(cls, input=None):
+    def dispatch(cls, route_params=None):
         choice = HomeView.home()
-        if choice.lower() == "q":
-            next = "quit"
-        elif choice == "1":
-            next = "players_management"
+        if choice == "1":
+            return "players_management"
         elif choice == "2":
-            next = "tournament_management"
-        return next, None
+            return "tournament_management"
+

@@ -1,4 +1,5 @@
-import json, os
+import json
+import os
 from models.tournament import Tournament
 from views.tournament_views import TournamentView
 
@@ -9,11 +10,12 @@ class TournamentController:
     @classmethod
     def list(cls, route_params=None):
         choice = TournamentView.display_list()
-
         if choice == "1":
             return "add_tournament"
         elif choice == "2":
-            return "add_player_in_tournament", None
+            return "add_player_in_tournament"
+        elif choice == "3":
+            return "delete_tournament"
 
     @classmethod
     def create(cls):
@@ -27,10 +29,10 @@ class TournamentController:
             cls.tournaments.append(tournament)
             cls.save_tournaments()
 
-        print("Le tournoi a été créé avec succès!")
-        print()
-
         return "tournament_management"
+
+    # @classmethod
+    # def delete(cls):
 
     @classmethod
     def find_tournament_by_name(cls, tournaments, name):
@@ -44,24 +46,16 @@ class TournamentController:
         # Charger les tournois à partir du fichier JSON
         tournaments = cls.load_tournaments()
 
-        # Rechercher le tournoi spécifié par son nom
         tournament = cls.find_tournament_by_name(tournaments, tournament_name)
         if tournament is None:
-            print("Le tournoi spécifié n'existe pas.")
-            return
-
-        # Vérifier si le joueur est déjà inscrit dans le tournoi
+            result = "tournament_not_found"
         if player_id in tournament.players:
-            print("Le joueur est déjà inscrit dans le tournoi.")
-            return
-
-        # Ajouter le joueur à la liste des joueurs du tournoi
+            result = "player_already_registered"
         tournament.players.append(player_id)
-
-        # Enregistrer les tournois mis à jour dans le fichier JSON
         cls.save_tournaments()
+        result = "player_registered"
 
-        print("Le joueur a été inscrit dans le tournoi avec succès.")
+        TournamentView.display_registration_result(result)
 
     @classmethod
     def load_tournaments(cls):
@@ -103,30 +97,40 @@ class TournamentController:
 
     @classmethod
     def list_tournaments(cls):
-        tournaments = cls.tournaments
-        if tournaments:
-            print("=== Liste des tournois ===")
-            for i, tournament in enumerate(tournaments):
-                print(f"{i + 1}. {tournament.name}")
-            print()
-
-            # demande choix tournoi
-            selected_index = input("Sélection du tournoi (entrez le numéro) :")
+        cls.load_tournaments()
+        if cls.tournaments:
+            result = "display_list_tournament"
+            TournamentView.display_tournament_list(cls.tournaments, result)
+            selected_index = TournamentView.display_selected_tournament()
             try:
                 selected_index = int(selected_index) - 1
-                if 0 <= selected_index < len(tournaments):
-                    selected_tournament = tournaments[selected_index]
+                if 0 <= selected_index < len(cls.tournaments):
+                    selected_tournament = cls.tournaments[selected_index]
                     cls.add_player_to_tournament(selected_tournament.name)
                 else:
-                    print("Numéro de tournoi invalide")
+                    TournamentView.display_invalid_tournament_number()
             except ValueError:
-                print("entrée invalide")
+                TournamentView.display_invalid_input()
         else:
-            print("Aucun tournoi enregistré.")
-        print()
+            result = "tournament_not_found"
+            TournamentView.display_tournament_list(cls.tournaments, result)
+
+    @classmethod
+    def selected_tournament(cls, tournaments):
+        # demande choix tournoi
+        selected_index = input("Sélection du tournoi (entrez le numéro) :")
+        try:
+            selected_index = int(selected_index) - 1
+            if 0 <= selected_index < len(tournaments):
+                selected_tournament = tournaments[selected_index]
+                cls.add_player_to_tournament(selected_tournament.name)
+            else:
+                print("Numéro de tournoi invalide")
+        except ValueError:
+            print("entrée invalide")
 
     @classmethod
     def add_player_to_tournament(cls, tournament_name):
-        player_id = input("ID du joueur : ")
+        player_id = TournamentView.get_player_id()
         cls.register(tournament_name, player_id)
-        print()
+

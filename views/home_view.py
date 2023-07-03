@@ -5,6 +5,8 @@ class HomeView:
         print("Welcome\n")
         print("1. Players Management")
         print("2. Tournament Management\n")
-        print("Q. Exit")
 
-        return input("Choice: ")
+        choice = input("Choice:")
+        extra_info = None
+
+        return choice, extra_info

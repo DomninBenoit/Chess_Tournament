@@ -1,9 +1,9 @@
 class TournamentView:
     @classmethod
     def display_list(cls, route_params=None):
-        print("1. Add Tournament")
-        print("2. Add Player in Tournament")
-        print("3. Delete Tournament")
+        print("1. Creation Tournoi")
+        print("2. Ajout joueur au tournoi")
+        print("3. Supprimer tournoi")
 
         choice = input("Choice:")
         extra_info = None
@@ -20,6 +20,18 @@ class TournamentView:
             "date_end": input("Date de fin (jj/mm/aaaa) : "),
             "nb_round": int(input("Nombre de rounds (facultatif - par défaut : 4) : "))
         }
+
+    @classmethod
+    def get_tournament_name(cls):
+        tournament_name = input("Entrer le nom du tournoi à supprimer : ")
+        return tournament_name
+
+    @classmethod
+    def display_delete_result(cls, result, route_params=None):
+        if result == "tournament_delete":
+            print("Le tournoi est supprimé")
+        elif result == "tournament_not_found":
+            print("Le tournoi spécifié n'existe pas.")
 
     @classmethod
     def display_registration_result(cls, result, route_params=None):

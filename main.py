@@ -10,8 +10,9 @@ class Application:
         #"players_management": PlayerController.list,
         #"create_player": PlayerController.create,
         "tournament_management": TournamentController.list(),
-        #"add_tournament": TournamentController.create,
-        "add_player_in_tournament": TournamentController.list_tournaments(),
+        "add_tournament": TournamentController.create(),
+        #"add_player_in_tournament": TournamentController.list_tournaments(),
+        #"delete_tournament": TournamentController.delete(),
     }
 
     def __init__(self) -> None:

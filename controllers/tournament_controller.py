@@ -23,6 +23,7 @@ class TournamentController:
 
     @classmethod
     def create(cls, route_params=None):
+        cls.tournaments = TournamentJson.load_tournaments()
         data = TournamentView.create_tournament_form()
         tournament = Tournament(**data)
         if os.path.getsize('data/tournaments.json') == 0:
@@ -35,8 +36,25 @@ class TournamentController:
 
         return "tournament_management", None
 
-    # @classmethod
-    # def delete(cls):
+    @classmethod
+    def delete(cls):
+        tournaments = TournamentJson.load_tournaments()
+        tournament_name = TournamentView.get_tournament_name()
+        updated_tournaments = []
+        tournament_found = False
+        for tournament in tournaments:
+            if tournament.name == tournament_name:
+                tournament_found = True
+            else:
+                updated_tournaments.append(tournament)
+        if tournament_found:
+            TournamentJson.save_tournaments(updated_tournaments)
+            result = "tournament_delete"
+        else:
+            result = "tournament_not_found"
+        TournamentView.display_delete_result(result)
+
+        return "tournament_management", None
 
     @classmethod
     def find_tournament_by_name(cls, tournaments, name):

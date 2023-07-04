@@ -2,6 +2,7 @@ import json
 import os
 from models.tournament import Tournament
 from views.tournament_views import TournamentView
+from data.json_utils import TournamentJson
 
 
 class TournamentController:
@@ -11,25 +12,27 @@ class TournamentController:
     def list(cls, route_params=None):
         choice = TournamentView.display_list()
         if choice == "1":
-            return "add_tournament"
+            return "add_tournament", None
         elif choice == "2":
-            return "add_player_in_tournament"
+            return "add_player_in_tournament", None
         elif choice == "3":
-            return "delete_tournament"
+            return "delete_tournament", None
+        else:
+            return "tournament_management", None
 
     @classmethod
-    def create(cls):
+    def create(cls, route_params=None):
         data = TournamentView.create_tournament_form()
         tournament = Tournament(**data)
         if os.path.getsize('data/tournaments.json') == 0:
             cls.tournaments.append(tournament)
-            cls.save_tournaments()
+            TournamentJson.save_tournaments(cls.tournaments)
         else:
-            cls.load_tournaments()
+            TournamentJson.load_tournaments()
             cls.tournaments.append(tournament)
-            cls.save_tournaments()
+            TournamentJson.save_tournaments(cls.tournaments)
 
-        return "tournament_management"
+        return "tournament_management", None
 
     # @classmethod
     # def delete(cls):
@@ -44,60 +47,23 @@ class TournamentController:
     @classmethod
     def register(cls, tournament_name, player_id):
         # Charger les tournois à partir du fichier JSON
-        tournaments = cls.load_tournaments()
+        cls.tournaments = TournamentJson.load_tournaments()
 
-        tournament = cls.find_tournament_by_name(tournaments, tournament_name)
+        tournament = cls.find_tournament_by_name(cls.tournaments, tournament_name)
         if tournament is None:
             result = "tournament_not_found"
         if player_id in tournament.players:
             result = "player_already_registered"
-        tournament.players.append(player_id)
-        cls.save_tournaments()
-        result = "player_registered"
+        else:
+            tournament.players.append(player_id)
+            TournamentJson.save_tournaments(cls.tournaments)
+            result = "player_registered"
 
         TournamentView.display_registration_result(result)
 
     @classmethod
-    def load_tournaments(cls):
-        with open('data/tournaments.json', 'r') as f:
-            tournaments_json = json.load(f)
-
-        cls.tournaments = []
-        for tournament_data in tournaments_json:
-            tournament = Tournament(
-                tournament_data['name'],
-                tournament_data['place'],
-                tournament_data['date_start'],
-                tournament_data['date_end'],
-                tournament_data['nb_round']
-            )
-            tournament.players = tournament_data['players']
-            tournament.rounds = tournament_data['rounds']
-            cls.tournaments.append(tournament)
-
-        return cls.tournaments
-
-    @classmethod
-    def save_tournaments(cls):
-        tournaments_json = []
-        for tournament in cls.tournaments:
-            tournament_data = {
-                'name': tournament.name,
-                'place': tournament.place,
-                'date_start': tournament.date_start,
-                'date_end': tournament.date_end,
-                'nb_round': tournament.nb_round,
-                'players': tournament.players,
-                'rounds': tournament.rounds
-            }
-            tournaments_json.append(tournament_data)
-
-        with open('data/tournaments.json', 'w') as f:
-            json.dump(tournaments_json, f)
-
-    @classmethod
-    def list_tournaments(cls):
-        cls.load_tournaments()
+    def list_tournaments(cls, route_params=None):
+        cls.tournaments = TournamentJson.load_tournaments()
         if cls.tournaments:
             result = "display_list_tournament"
             TournamentView.display_tournament_list(cls.tournaments, result)
@@ -106,31 +72,19 @@ class TournamentController:
                 selected_index = int(selected_index) - 1
                 if 0 <= selected_index < len(cls.tournaments):
                     selected_tournament = cls.tournaments[selected_index]
-                    cls.add_player_to_tournament(selected_tournament.name)
+                    cls.add_player_to_tournament(selected_tournament.name, route_params)
                 else:
                     TournamentView.display_invalid_tournament_number()
             except ValueError:
                 TournamentView.display_invalid_input()
+
         else:
             result = "tournament_not_found"
             TournamentView.display_tournament_list(cls.tournaments, result)
+        return "tournament_management", None
 
     @classmethod
-    def selected_tournament(cls, tournaments):
-        # demande choix tournoi
-        selected_index = input("Sélection du tournoi (entrez le numéro) :")
-        try:
-            selected_index = int(selected_index) - 1
-            if 0 <= selected_index < len(tournaments):
-                selected_tournament = tournaments[selected_index]
-                cls.add_player_to_tournament(selected_tournament.name)
-            else:
-                print("Numéro de tournoi invalide")
-        except ValueError:
-            print("entrée invalide")
-
-    @classmethod
-    def add_player_to_tournament(cls, tournament_name):
+    def add_player_to_tournament(cls, tournament_name, route_params):
         player_id = TournamentView.get_player_id()
         cls.register(tournament_name, player_id)
-
+        return "tournament_management", None

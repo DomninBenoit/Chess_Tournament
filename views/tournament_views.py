@@ -1,6 +1,6 @@
 class TournamentView:
     @classmethod
-    def display_list(cls):
+    def display_list(cls, route_params=None):
         print("1. Add Tournament")
         print("2. Add Player in Tournament")
         print("3. Delete Tournament")
@@ -11,7 +11,7 @@ class TournamentView:
         return choice, extra_info
 
     @classmethod
-    def create_tournament_form(cls):
+    def create_tournament_form(cls, route_params=None):
         print("=== Création d'un nouveau tournoi ===")
         return {
             "name": input("Nom du tournoi : "),
@@ -22,7 +22,7 @@ class TournamentView:
         }
 
     @classmethod
-    def display_registration_result(cls, result):
+    def display_registration_result(cls, result, route_params=None):
         if result == "tournament_not_found":
             print("Le tournoi spécifié n'existe pas.")
         elif result == "player_already_registered":
@@ -31,7 +31,7 @@ class TournamentView:
             print("Le joueur a été inscrit dans le tournoi avec succès.")
 
     @classmethod
-    def display_tournament_list(cls, tournaments, result):
+    def display_tournament_list(cls, tournaments, result, route_params=None):
         if result == "display_list_tournament":
             print("=== Liste des tournois ===")
             for i, tournament in enumerate(tournaments):
@@ -41,18 +41,18 @@ class TournamentView:
             print("Aucun tournoi enregistré.")
 
     @classmethod
-    def display_selected_tournament(cls):
+    def display_selected_tournament(cls, route_params=None):
         selected_index = input("Sélection du tournoi (entrez le numéro) :")
         return selected_index
 
     @classmethod
-    def display_invalid_tournament_number(cls):
+    def display_invalid_tournament_number(cls, route_params=None):
         print("Numéro de tournoi invalide")
 
     @classmethod
-    def display_invalid_input(cls):
+    def display_invalid_input(cls, route_params=None):
         print("Entrée invalide")
 
     @classmethod
-    def get_player_id(cls):
+    def get_player_id(cls,route_params=None):
         return input("ID du joueur : ")

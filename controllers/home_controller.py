@@ -7,7 +7,7 @@ class HomePageController:
     def dispatch(cls, route_params=None):
         choice = HomeView.home()
         if choice == "1":
-            return "players_management"
+            return "players_management", None
         elif choice == "2":
-            return "tournament_management"
+            return "tournament_management", None
 

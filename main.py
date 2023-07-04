@@ -7,7 +7,7 @@ import subprocess as sp
 class Application:
     routes = {
         "homepage": HomePageController.dispatch(),
-        #"players_management": PlayerController.list(),
+        #"players_management": PlayerController.list,
         #"create_player": PlayerController.create,
         "tournament_management": TournamentController.list(),
         #"add_tournament": TournamentController.create,

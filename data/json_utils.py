@@ -1,5 +1,6 @@
 import json, os
 from models.tournament import Tournament
+from models.player import Player
 
 
 class TournamentJson:
@@ -75,3 +76,27 @@ class PlayersJson:
 
         with open('data/players.json', 'w') as f:
             json.dump(existing_players, f)
+
+    @classmethod
+    def load_players(cls):
+        players = []
+
+        if os.path.getsize('data/players.json') > 0:  # Vérifie si le fichier n'est pas vide
+            try:
+                with open('data/players.json', 'r') as f:
+                    file_content = f.read()
+
+                players_json = json.loads(file_content)
+
+                for player_data in players_json:
+                    player = Player(
+                        player_data['firstname'],
+                        player_data['lastname'],
+                        player_data['date_of_birth'],
+                        player_data['national_id'],
+                    )
+                    players.append(player)
+            except (FileNotFoundError, json.JSONDecodeError) as e:
+                print(f"Error loading players: {e}")
+
+        return players

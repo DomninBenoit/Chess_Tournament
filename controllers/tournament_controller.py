@@ -2,7 +2,8 @@ import json
 import os
 from models.tournament import Tournament
 from views.tournament_views import TournamentView
-from data.json_utils import TournamentJson
+from views.player_views import PlayerView
+from data.json_utils import TournamentJson, PlayersJson
 
 
 class TournamentController:
@@ -86,5 +87,15 @@ class TournamentController:
     @classmethod
     def add_player_to_tournament(cls, tournament_name, route_params):
         player_id = TournamentView.get_player_id()
-        cls.register(tournament_name, player_id)
-        return "tournament_management", None
+        players = PlayersJson.load_players()
+
+        player_exists = any(player.national_id == player_id for player in players)
+
+        if player_exists:
+            # L'ID du joueur existe, procéder à l'enregistrement
+            cls.register(tournament_name, player_id)
+            return "tournament_management", None
+        else:
+            # L'ID du joueur n'existe pas, afficher un message d'erreur
+            PlayerView.display_player_not_found()
+            return "tournament_management", None

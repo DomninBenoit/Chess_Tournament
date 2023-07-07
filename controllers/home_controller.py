@@ -4,7 +4,7 @@ from views.home_view import HomeView
 class HomePageController:
 
     @classmethod
-    def dispatch(cls, route_params=None):
+    def dispatch(cls, store, route_params=None):
         choice = HomeView.home()
         if choice == "1":
             return "players_management", None

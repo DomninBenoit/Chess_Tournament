@@ -68,3 +68,16 @@ class TournamentView:
     @classmethod
     def get_player_id(cls,route_params=None):
         return input("ID du joueur : ")
+
+    @classmethod
+    def display_data(cls, tournaments):
+        for tournament in tournaments:
+            print(f"Tournament: {tournament.name}")
+            print(f"Place: {tournament.place}")
+            print(f"Date Start: {tournament.date_start}")
+            print(f"Date End: {tournament.date_end}")
+            print(f"Number of Rounds: {tournament.nb_round}")
+            print("Players:")
+            for player in tournament.players:
+                print(f"- Player ID: {player}")
+            print("---------")

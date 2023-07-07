@@ -1,16 +1,13 @@
-import json
-import os
 from models.tournament import Tournament
 from views.tournament_views import TournamentView
 from views.player_views import PlayerView
-from data.json_utils import TournamentJson, PlayersJson
 
 
 class TournamentController:
     tournaments = []
 
     @classmethod
-    def list(cls, route_params=None):
+    def list(cls, store, route_params=None):
         choice = TournamentView.display_list()
         if choice == "1":
             return "add_tournament", None
@@ -22,33 +19,24 @@ class TournamentController:
             return "tournament_management", None
 
     @classmethod
-    def create(cls, route_params=None):
-        cls.tournaments = TournamentJson.load_tournaments()
+    def create(cls, store, route_params=None):
         data = TournamentView.create_tournament_form()
         tournament = Tournament(**data)
-        if os.path.getsize('data/tournaments.json') == 0:
-            cls.tournaments.append(tournament)
-            TournamentJson.save_tournaments(cls.tournaments)
-        else:
-            TournamentJson.load_tournaments()
-            cls.tournaments.append(tournament)
-            TournamentJson.save_tournaments(cls.tournaments)
+        cls.tournaments.append(tournament)
+        TournamentView.display_data(cls.tournaments)
 
         return "tournament_management", None
 
     @classmethod
-    def delete(cls):
-        tournaments = TournamentJson.load_tournaments()
+    def delete(cls, store, route_params=None):
         tournament_name = TournamentView.get_tournament_name()
-        updated_tournaments = []
         tournament_found = False
-        for tournament in tournaments:
+        for tournament in cls.tournaments:
             if tournament.name == tournament_name:
+                cls.tournaments.remove(tournament)
                 tournament_found = True
-            else:
-                updated_tournaments.append(tournament)
+                break
         if tournament_found:
-            TournamentJson.save_tournaments(updated_tournaments)
             result = "tournament_delete"
         else:
             result = "tournament_not_found"
@@ -57,32 +45,28 @@ class TournamentController:
         return "tournament_management", None
 
     @classmethod
-    def find_tournament_by_name(cls, tournaments, name):
-        for tournament in tournaments:
+    def find_tournament_by_name(cls, name):
+        for tournament in cls.tournaments:
             if tournament.name == name:
                 return tournament
         return None
 
     @classmethod
     def register(cls, tournament_name, player_id):
-        # Charger les tournois à partir du fichier JSON
-        cls.tournaments = TournamentJson.load_tournaments()
-
-        tournament = cls.find_tournament_by_name(cls.tournaments, tournament_name)
+        tournament = cls.find_tournament_by_name(tournament_name)
         if tournament is None:
             result = "tournament_not_found"
         if player_id in tournament.players:
             result = "player_already_registered"
         else:
             tournament.players.append(player_id)
-            TournamentJson.save_tournaments(cls.tournaments)
             result = "player_registered"
 
         TournamentView.display_registration_result(result)
+        return "tournament_management", None
 
     @classmethod
     def list_tournaments(cls, route_params=None):
-        cls.tournaments = TournamentJson.load_tournaments()
         if cls.tournaments:
             result = "display_list_tournament"
             TournamentView.display_tournament_list(cls.tournaments, result)
@@ -105,9 +89,8 @@ class TournamentController:
     @classmethod
     def add_player_to_tournament(cls, tournament_name, route_params):
         player_id = TournamentView.get_player_id()
-        players = PlayersJson.load_players()
 
-        player_exists = any(player.national_id == player_id for player in players)
+        player_exists = any(player.national_id == player_id for player in cls.players)
 
         if player_exists:
             # L'ID du joueur existe, procéder à l'enregistrement
@@ -117,3 +100,7 @@ class TournamentController:
             # L'ID du joueur n'existe pas, afficher un message d'erreur
             PlayerView.display_player_not_found()
             return "tournament_management", None
+
+    @classmethod
+    def display_data(cls):
+        TournamentView.display_data(cls.tournaments)

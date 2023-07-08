@@ -13,7 +13,7 @@ class Application:
         "tournament_management": TournamentController.list,
         "add_tournament": TournamentController.create,
         "add_player_in_tournament": TournamentController.list_tournaments,
-        "delete_tournament": TournamentController.delete,
+        "details_tournaments": TournamentController.display_data,
     }
 
     def __init__(self) -> None:
@@ -22,9 +22,10 @@ class Application:
         self.route_params = None
         self.store = {
             "players": [
-                Player(1, "Pablo", 36, "pablo@test.com"),
-                Player(2, "Michel", 40, "michel@test.com"),
-            ]
+                Player("Domnin", "Benoit", "15/03/1989", "AB12345"),
+                Player("alain", "brin", "15/03/1989", "AB45678"),
+            ],
+            "tournaments": []
         }
 
     def run(self):

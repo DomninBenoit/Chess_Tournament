@@ -4,11 +4,11 @@ class TournamentView:
         print("1. Creation Tournoi")
         print("2. Ajout joueur au tournoi")
         print("3. Supprimer tournoi")
+        print("4. Afficher les tournoi")
 
         choice = input("Choice:")
-        extra_info = None
 
-        return choice, extra_info
+        return choice
 
     @classmethod
     def create_tournament_form(cls, route_params=None):

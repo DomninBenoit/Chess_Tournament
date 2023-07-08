@@ -1,4 +1,6 @@
 from models.round import Round
+from models.match import Match
+import random
 
 
 class Tournament:
@@ -54,39 +56,29 @@ class Tournament:
         else:
             print("Le tournoi n'a pas encore commencé.")
 
-    # getter et setter
-    def get_name(self):
-        return self.name
+    @classmethod
+    def generate_pairs(cls, tournaments_players, round):
+        nb_players = len(tournaments_players)
 
-    def get_place(self):
-        return self.place
+        if nb_players % 2 != 0:
+            tournaments_players.append("Equilibrage")
 
-    def get_date_start(self):
-        return self.date_start
+        if round == 1:
+            random.shuffle(tournaments_players)
 
-    def get_date_end(self):
-        return self.date_end
+            pairs = []
+            for i in range(0, nb_players, 2):
+                player_a = tournaments_players[i]
+                player_b = tournaments_players[i + 1]
+                match = Match(player_a, player_b)
+                pairs.append(match)
 
-    def get_nb_round(self):
-        return self.nb_round
+            tournaments_players.add_match_to_round(round, pairs)
 
-    def get_players(self):
-        return self.players
+            return pairs
 
-    def get_rounds(self):
-        return self.rounds
-
-    def set_name(self, name):
-        self.name = name
-
-    def set_place(self, place):
-        self.place = place
-
-    def set_date_start(self, date_start):
-        self.date_start = date_start
-
-    def set_date_end(self, date_end):
-        self.date_end = date_end
-
-    def set_nb_round(self, nb_round):
-        self.nb_round = nb_round
+    def __str__(self):
+        return f"Tournament: {self.name}\n" \
+               f"Lieu: {self.place}\n" \
+               f"Date début: {self.date_start}\n" \
+               f"Date de fin: {self.date_end}\n"

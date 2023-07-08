@@ -7,6 +7,5 @@ class HomeView:
         print("2. Tournament Management\n")
 
         choice = input("Choice:")
-        extra_info = None
 
-        return choice, extra_info
+        return choice

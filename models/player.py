@@ -5,3 +5,9 @@ class Player:
         self.lastname = lastname
         self.date_of_birth = date_of_birth
         self.national_id = national_id
+
+    def __str__(self):
+        return f"Prénom: {self.firstname}\n" \
+               f"Nom: {self.lastname}\n" \
+               f"Date de naissance: {self.date_of_birth}\n" \
+               f"Id national: {self.national_id}\n"

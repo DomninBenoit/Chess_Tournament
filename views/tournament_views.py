@@ -5,6 +5,7 @@ class TournamentView:
         print("2. Ajout joueur au tournoi")
         print("3. Supprimer tournoi")
         print("4. Afficher les tournoi")
+        print("5. Lancer un tournoi")
 
         choice = input("Choice:")
 
@@ -66,7 +67,7 @@ class TournamentView:
         print("Entrée invalide")
 
     @classmethod
-    def get_player_id(cls,route_params=None):
+    def get_player_id(cls, route_params=None):
         return input("ID du joueur : ")
 
     @classmethod
@@ -79,5 +80,62 @@ class TournamentView:
             print(f"Number of Rounds: {tournament.nb_round}")
             print("Players:")
             for player in tournament.players:
-                print(f"- Player ID: {player}")
+                print(f"- Player :\n{player}")
             print("---------")
+
+    @classmethod
+    def display_tournament_to_start(cls, tournament):
+        print(f"Nom: {tournament.name}")
+        print(f"Lieu: {tournament.place}")
+        print(f"Date: {tournament.date_start}")
+        print("")
+        print("1. Lancer le premier round")
+
+        choice = input("Choice:")
+
+        return choice
+
+    @classmethod
+    def display_list_match_in_round(cls, matches, round_name):
+        print(f"{round_name}\n")
+        match_number = 1
+        for match in matches:
+            if match.score_a == 1:
+                result = f"{match.player_a.firstname} {match.player_a.lastname} wins"
+            elif match.score_b == 1:
+                result = f"{match.player_b.firstname} {match.player_b.lastname} wins"
+            elif match.score_a == 0.5 and match.score_b == 0.5:
+                result = "egality"
+            else:
+                result = "waiting for result"
+            print(
+                f"match {match_number} : {match.player_a.firstname} {match.player_a.lastname} vs {match.player_b.firstname} {match.player_b.lastname} - {result}")
+            match_number += 1
+        print("")
+
+    @classmethod
+    def display_match(cls, matches):
+        match_number = 1
+        for match in matches:
+            if match.score_a == 0 and match.score_b == 0:
+                print(f" entrer le resultat du match {match.player_a.firstname} {match.player_a.lastname} vs {match.player_b.firstname} {match.player_b.lastname}")
+                match_number += 1
+        print("")
+        choice = input("Choice num match:")
+        print("")
+        return choice
+
+    @classmethod
+    def display_match_winner(cls, match):
+        print(f"1. {match.player_a.firstname} {match.player_a.lastname} wins")
+        print(f"2. {match.player_b.firstname} {match.player_b.lastname} wins")
+        print("3. egalité")
+        print("")
+        choice = input("Choice:")
+        print("")
+        return choice
+
+    @classmethod
+    def display_result_match(cls, match):
+        print(f"{match.player_a.firstname} {match.player_a.lastname} score : {match.score_a}")
+        print(f"{match.player_b.firstname} {match.player_b.lastname} score : {match.score_b}")

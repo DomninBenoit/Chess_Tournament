@@ -4,6 +4,9 @@ from controllers.player_controller import PlayerController
 from models.player import Player
 import subprocess as sp
 
+from models.round import Round
+from models.tournament import Tournament
+
 
 class Application:
     routes = {
@@ -12,8 +15,10 @@ class Application:
         "create_player": PlayerController.create,
         "tournament_management": TournamentController.list,
         "add_tournament": TournamentController.create,
-        "add_player_in_tournament": TournamentController.list_tournaments,
+        "add_player_in_tournament": TournamentController.add_player_to_tournament,
         "details_tournaments": TournamentController.display_data,
+        "details_round": TournamentController.round,
+        "start_tournament": TournamentController.start_tournament,
     }
 
     def __init__(self) -> None:
@@ -24,9 +29,34 @@ class Application:
             "players": [
                 Player("Domnin", "Benoit", "15/03/1989", "AB12345"),
                 Player("alain", "brin", "15/03/1989", "AB45678"),
+                Player("John", "Doe", "01/01/1990", "CD12345"),
+                Player("Jane", "Smith", "15/07/1992", "EF12345"),
+                Player("Michael", "Johnson", "10/05/1987", "GH12345"),
+                Player("Emily", "Brown", "25/09/1995", "IJ12345"),
+                Player("David", "Wilson", "08/12/1991", "KL12345"),
+                Player("Sarah", "Davis", "22/06/1985", "MN12345"),
             ],
-            "tournaments": []
+            "tournaments": [],
+
         }
+        player1 = self.store["players"][0]
+        player2 = self.store["players"][1]
+        player3 = self.store["players"][2]
+        player4 = self.store["players"][3]
+        player5 = self.store["players"][4]
+        player6 = self.store["players"][5]
+        player7 = self.store["players"][6]
+        player8 = self.store["players"][7]
+
+        tournament = Tournament("Noir", "Bourges", "07/07/2023",
+                                "08/08/2023", 4, [player1, player2, player3, player4, player5, player6, player7], [
+                                    Round("Round 1"),
+                                    Round("Round 2"),
+                                    Round("Round 3"),
+                                    Round("Round 4"),
+                                ])
+
+        self.store["tournaments"].append(tournament)
 
     def run(self):
         while not self.exit:

@@ -116,9 +116,11 @@ class TournamentView:
     @classmethod
     def display_match(cls, matches):
         match_number = 1
+        nb_matches = len(matches)
+        print(nb_matches)
         for match in matches:
             if match.score_a == 0 and match.score_b == 0:
-                print(f" entrer le resultat du match {match.player_a.firstname} {match.player_a.lastname} vs {match.player_b.firstname} {match.player_b.lastname}")
+                print(f" entrer le resultat du match {match_number}")
                 match_number += 1
         print("")
         choice = input("Choice num match:")

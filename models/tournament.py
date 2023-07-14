@@ -52,11 +52,10 @@ class Tournament:
 
             random.shuffle(self.players)
 
-
             for i in range(0, nb_players, 2):
                 player_a = self.players[i]
                 player_b = self.players[i + 1]
-                match = Match(player_a, player_b)
+                match = Match(self.name, player_a, player_b)
                 Tournament.matches.append(match)
 
             current_round = self.get_current_round()
@@ -70,6 +69,38 @@ class Tournament:
         else:
             print("Le numéro de round spécifié n'est pas valide.")
             return []
+
+    def update_player_scores(self, store, round_num):
+        tournament_scores = store.get("tournament_scores", {})
+        tournament_name = self.name
+
+        # Vérifier si le tournoi a déjà des scores enregistrés
+        if tournament_name in tournament_scores:
+            tournament_scores_data = tournament_scores[tournament_name]
+        else:
+            tournament_scores_data = {}
+
+        # Mettre à jour les scores des joueurs pour le round actuel
+        round_name = f"Round {round_num}"
+        round_scores = tournament_scores_data.get(round_name, {})
+
+        for match in self.matches:
+            player_a = match.player_a
+            player_b = match.player_b
+            score_a = match.score_a
+            score_b = match.score_b
+
+            round_scores[player_a] = round_scores.get(player_a, 0) + score_a
+            round_scores[player_b] = round_scores.get(player_b, 0) + score_b
+
+        # Mettre à jour les scores du round dans les données du tournoi
+        tournament_scores_data[round_name] = round_scores
+
+        # Mettre à jour les données du tournoi dans le store
+        tournament_scores[tournament_name] = tournament_scores_data
+        store["tournament_scores"] = tournament_scores
+
+        print(tournament_scores)
 
     def __str__(self):
         return f"Tournament: {self.name}\n" \

@@ -1,6 +1,7 @@
 class Match:
 
-    def __init__(self, player_a, player_b) -> None:
+    def __init__(self, tournament_name, player_a, player_b) -> None:
+        self.tournament_name = tournament_name
         self.player_a = player_a
         self.player_b = player_b
         self.score_a = 0

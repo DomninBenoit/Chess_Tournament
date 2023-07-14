@@ -6,7 +6,7 @@ from views.player_views import PlayerView
 
 
 class TournamentController:
-
+    
     @classmethod
     def list(cls, store, route_params=None):
         choice = TournamentView.display_list()
@@ -128,19 +128,21 @@ class TournamentController:
                         round_name, round_num = Tournament.start_tournament(selected_tournament)
                         Tournament.generate_pairs(selected_tournament, round_num)
                         while True:
-                            cls.round(round_name)
+                            cls.round(store, selected_tournament.name, round_name, round_num)
 
     @classmethod
-    def round(cls, round_name):
-        matches = Tournament.matches
+    def round(cls, store, tournament_name, round_name, round_num):
+        tournament = cls.find_tournament_by_name(store, tournament_name)
+        matches = tournament.matches
+        print(matches)
         TournamentView.display_list_match_in_round(matches, round_name)
         choice_match = TournamentView.display_match(matches)
-        cls.choice_match_winner(choice_match, matches)
+        cls.choice_match_winner(store, choice_match, matches, round_num)
 
         return "details_round", round_name
 
     @classmethod
-    def choice_match_winner(cls, choice_match, matches):
+    def choice_match_winner(cls, store, choice_match, matches, round_num):
         choice_match = int(choice_match)
         match = matches[choice_match - 1]
         choice_winner = TournamentView.display_match_winner(match)
@@ -152,3 +154,8 @@ class TournamentController:
             match.score_a += 0.5
             match.score_b += 0.5
         TournamentView.display_result_match(match)
+
+        # Mettre à jour les scores des joueurs dans le store
+        tournament_name = match.tournament_name
+        tournament = TournamentController.find_tournament_by_name(store, tournament_name)
+        tournament.update_player_scores(store, round_num)

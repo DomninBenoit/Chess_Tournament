@@ -3,6 +3,8 @@ from models.round import Round
 from models.match import Match
 import random
 
+from views.tournament_views import TournamentView
+
 
 class Tournament:
     matches = []
@@ -15,6 +17,14 @@ class Tournament:
         self.nb_round = nb_round
         self.players = [] if player_ids is None else player_ids
         self.rounds = [] if rounds is None else rounds
+        self.scores = {}
+        self.current_round = 1
+
+    def __str__(self):
+        return f"Tournament: {self.name}\n" \
+               f"Lieu: {self.place}\n" \
+               f"Date début: {self.date_start}\n" \
+               f"Date de fin: {self.date_end}\n"
 
     # Méthodes pour ajout et suppression de joueurs dans un tournoi
     def add_player(self, player):
@@ -31,11 +41,17 @@ class Tournament:
 
     # Méthodes pour gérer les tours
     def start_tournament(self):
-        for round_num in range(1, self.nb_round + 1):
-            round_name = f"Round {round_num}"
-            round_obj = Round(round_name)
-            self.rounds.append(round_obj)
-            return round_name, round_num
+        round_name = f"Round {self.current_round}"
+        round_obj = Round(self.current_round)
+        self.rounds.append(round_obj)
+        return round_name
+
+    def next_round(self):
+        self.current_round += 1
+        round_name = f"Round {self.current_round}"
+        round_obj = Round(self.current_round)
+        self.rounds.append(round_obj)
+        return round_name
 
     def get_current_round(self):
         if self.rounds:
@@ -43,13 +59,15 @@ class Tournament:
         else:
             return None
 
-    def generate_pairs(self, round_number):
-        if round_number == 1:
-            nb_players = len(self.players)
-            if nb_players % 2 != 0:
-                equilibrage_player = Player("Equilibrage", "", "", "")  # Crée un objet Player pour "Equilibrage"
-                self.players.append(equilibrage_player)
+    def generate_pairs(self):
+        Tournament.matches = []
+        sorted_dict = dict(sorted(self.scores.items(), key=lambda item: item[1], reverse=True))
+        nb_players = len(self.players)
+        if nb_players % 2 != 0:
+            equilibrage_player = Player("Equilibrage", "", "", "")  # Crée un objet Player pour "Equilibrage"
+            self.players.append(equilibrage_player)
 
+        if self.current_round == 1:
             random.shuffle(self.players)
 
             for i in range(0, nb_players, 2):
@@ -60,52 +78,66 @@ class Tournament:
 
             current_round = self.get_current_round()
             if current_round:
-                for match in Tournament.matches:
-                    current_round.add_match(match)
+                current_round.add_match(Tournament.matches)
             else:
                 print("Le tournoi n'a pas encore commencé.")
 
             return Tournament.matches
+        elif self.current_round > 1:
+
+            sorted_players = list(sorted_dict.keys())
+            print(sorted_dict)
+            for i in range(0, nb_players, 2):
+                player_a = sorted_players[i]
+                player_b = sorted_players[i + 1]
+                match = Match(self.name, player_a, player_b)
+                Tournament.matches.append(match)
+
+            current_round = self.get_current_round()
+            if current_round:
+                current_round.add_match(Tournament.matches)
+
         else:
             print("Le numéro de round spécifié n'est pas valide.")
             return []
 
-    def update_player_scores(self, store, round_num):
-        tournament_scores = store.get("tournament_scores", {})
-        tournament_name = self.name
-
-        # Vérifier si le tournoi a déjà des scores enregistrés
-        if tournament_name in tournament_scores:
-            tournament_scores_data = tournament_scores[tournament_name]
+    def choice_match_winner(self, choice_match, matches):
+        choice_match = int(choice_match)
+        match = matches[choice_match - 1]
+        choice_winner = TournamentView.display_match_winner(match)
+        if choice_winner == "1":
+            match.score_a = 1
+            self.scores[match.player_a] += 1
+        elif choice_winner == "2":
+            match.score_b = 1
+            self.scores[match.player_b] += 1
         else:
-            tournament_scores_data = {}
+            match.score_a = 0.5
+            match.score_b = 0.5
+            self.scores[match.player_a] += 0.5
+            self.scores[match.player_b] += 0.5
 
-        # Mettre à jour les scores des joueurs pour le round actuel
-        round_name = f"Round {round_num}"
-        round_scores = tournament_scores_data.get(round_name, {})
+    def round(self, round_name):
+        matches = self.matches
+        TournamentView.display_list_match_in_round(matches, round_name)
+        choice_match = TournamentView.display_match(matches)
+        Tournament.choice_match_winner(self, choice_match, matches)
 
-        for match in self.matches:
-            player_a = match.player_a
-            player_b = match.player_b
-            score_a = match.score_a
-            score_b = match.score_b
+    def display_round(self, round_name):
+        Tournament.generate_pairs(self)
+        for player_id in self.players:
+            self.scores[player_id] = 0
+        count = len(self.matches)
+        while count > 0:
+            Tournament.round(self, round_name)
+            count -= 1
 
-            round_scores[player_a] = round_scores.get(player_a, 0) + score_a
-            round_scores[player_b] = round_scores.get(player_b, 0) + score_b
-
-        # Mettre à jour les scores du round dans les données du tournoi
-        tournament_scores_data[round_name] = round_scores
-
-        # Mettre à jour les données du tournoi dans le store
-        tournament_scores[tournament_name] = tournament_scores_data
-        store["tournament_scores"] = tournament_scores
-
-        print(tournament_scores)
-
-    def __str__(self):
-        return f"Tournament: {self.name}\n" \
-               f"Lieu: {self.place}\n" \
-               f"Date début: {self.date_start}\n" \
-               f"Date de fin: {self.date_end}\n"
-
+    @staticmethod
+    def get_selected_tournament_index():
+        selected_index = TournamentView.display_selected_tournament()
+        try:
+            return selected_index
+        except ValueError:
+            TournamentView.display_invalid_input()
+            return None
 

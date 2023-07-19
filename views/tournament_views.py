@@ -44,18 +44,20 @@ class TournamentView:
             print("Le joueur a été inscrit dans le tournoi avec succès.")
 
     @classmethod
-    def display_tournament_list(cls, tournaments, result, route_params=None):
-        if result == "display_list_tournament":
-            print("=== Liste des tournois ===")
-            for i, tournament in enumerate(tournaments):
-                print(f"{i + 1}. {tournament.name}")
-            print()
-        elif result == "tournament_not_found":
+    def display_tournament_list(cls, tournaments, route_params=None):
+        if not tournaments:
             print("Aucun tournoi enregistré.")
+            input("Appuyez sur une touche pour continuer...")
+            return
+
+        print("=== Liste des tournois ===")
+        for i, tournament in enumerate(tournaments):
+            print(f"{i + 1}. {tournament.name}")
 
     @classmethod
     def display_selected_tournament(cls, route_params=None):
-        selected_index = input("Sélection du tournoi (entrez le numéro) :")
+        selected_index_str = input("Sélection du tournoi (entrez le numéro) :")
+        selected_index = int(selected_index_str) - 1
         return selected_index
 
     @classmethod
@@ -91,9 +93,7 @@ class TournamentView:
         print("")
         print("1. Lancer le premier round")
 
-        choice = input("Choice:")
-
-        return choice
+        input("Choice:")
 
     @classmethod
     def display_list_match_in_round(cls, matches, round_name):
@@ -115,15 +115,11 @@ class TournamentView:
 
     @classmethod
     def display_match(cls, matches):
-        match_number = 1
-        nb_matches = len(matches)
-        print(nb_matches)
-        for match in matches:
+        for index, match in enumerate(matches, start=1):
             if match.score_a == 0 and match.score_b == 0:
-                print(f" entrer le resultat du match {match_number}")
-                match_number += 1
+                print(f"Entrer le résultat du match {index}")
         print("")
-        choice = input("Choice num match:")
+        choice = input("Choix du numéro de match : ")
         print("")
         return choice
 
@@ -138,6 +134,18 @@ class TournamentView:
         return choice
 
     @classmethod
-    def display_result_match(cls, match):
-        print(f"{match.player_a.firstname} {match.player_a.lastname} score : {match.score_a}")
-        print(f"{match.player_b.firstname} {match.player_b.lastname} score : {match.score_b}")
+    def display_round_next(cls):
+        print("Tout les match du tour sont valider")
+        input("Appuyez sur une touche pour lancer le tour suivant...")
+
+    @classmethod
+    def display_round(cls, rounds):
+        print("Le Tournoi est maintenant terminé")
+        for round_obj in rounds:
+            print(f"Round : {round_obj.name}")
+            for matches in round_obj.match_list:
+                for match in matches:
+                    print(f"{match.player_a.firstname} {match.player_a.lastname} : {match.score_a} / {match.score_b} : {match.player_b.firstname} {match.player_b.lastname}")
+        input("Appuyez sur une touche pour quitter le tournoi")
+
+

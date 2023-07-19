@@ -17,8 +17,8 @@ class Application:
         "add_tournament": TournamentController.create,
         "add_player_in_tournament": TournamentController.add_player_to_tournament,
         "details_tournaments": TournamentController.display_data,
-        "details_round": TournamentController.round,
         "start_tournament": TournamentController.start_tournament,
+        "next_round": TournamentController.next_round,
     }
 
     def __init__(self) -> None:
@@ -49,12 +49,7 @@ class Application:
         player8 = self.store["players"][7]
 
         tournament = Tournament("Noir", "Bourges", "07/07/2023",
-                                "08/08/2023", 4, [player1, player2, player3, player4, player5, player6, player7], [
-                                    Round("Round 1"),
-                                    Round("Round 2"),
-                                    Round("Round 3"),
-                                    Round("Round 4"),
-                                ])
+                                "08/08/2023", 4, [player1, player2, player3, player4, player5, player6, player7], [])
 
         self.store["tournaments"].append(tournament)
 

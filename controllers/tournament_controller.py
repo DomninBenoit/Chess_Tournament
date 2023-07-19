@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from models.tournament import Tournament
 from views.tournament_views import TournamentView
 from views.player_views import PlayerView
@@ -56,17 +54,16 @@ class TournamentController:
 
     @classmethod
     def add_player_to_tournament(cls, store, route_params=None):
-        tournaments = cls.list_tournaments(store, route_params)
+        tournaments = store["tournaments"]
+        TournamentView.display_tournament_list(tournaments)
         if tournaments:
-            selected_index = cls.get_selected_tournament_index()
+            selected_index = TournamentView.display_selected_tournament()
             if 0 <= selected_index < len(tournaments):
                 selected_tournament = tournaments[selected_index]
                 cls.add_player(selected_tournament.name, store, route_params)
             else:
                 TournamentView.display_invalid_tournament_number()
-        else:
-            result = "tournament_not_found"
-            TournamentView.display_tournament_list(tournaments, result)
+
         return "tournament_management", None
 
     @classmethod
@@ -102,60 +99,33 @@ class TournamentController:
         return tournaments
 
     @classmethod
-    def get_selected_tournament_index(cls):
-        selected_index = TournamentView.display_selected_tournament()
-        try:
-            selected_index = int(selected_index) - 1
-            return selected_index
-        except ValueError:
-            TournamentView.display_invalid_input()
-            return None
-
-    @classmethod
     def start_tournament(cls, store, route_params=None):
         tournaments = cls.list_tournaments(store, route_params)
         if tournaments:
-            selected_index = cls.get_selected_tournament_index()
+            selected_index = Tournament.get_selected_tournament_index()
             if 0 <= selected_index < len(tournaments):
                 selected_tournament = tournaments[selected_index]
-                current_date = datetime.now().date()
-                date_format = "%d/%m/%Y"
-                date_start = datetime.strptime(selected_tournament.date_start, date_format).date()
-                date_end = datetime.strptime(selected_tournament.date_end, date_format).date()
-                if date_start <= current_date <= date_end:
-                    choice = TournamentView.display_tournament_to_start(selected_tournament)
-                    if choice == "1":
-                        round_name, round_num = Tournament.start_tournament(selected_tournament)
-                        Tournament.generate_pairs(selected_tournament, round_num)
-                        while True:
-                            cls.round(store, selected_tournament.name, round_name, round_num)
+                TournamentView.display_tournament_to_start(selected_tournament)
+                round_name = Tournament.start_tournament(selected_tournament)
+                Tournament.display_round(selected_tournament, round_name)
+                return "next_round", selected_tournament
 
     @classmethod
-    def round(cls, store, tournament_name, round_name, round_num):
-        tournament = cls.find_tournament_by_name(store, tournament_name)
-        matches = tournament.matches
-        print(matches)
-        TournamentView.display_list_match_in_round(matches, round_name)
-        choice_match = TournamentView.display_match(matches)
-        cls.choice_match_winner(store, choice_match, matches, round_num)
-
-        return "details_round", round_name
-
-    @classmethod
-    def choice_match_winner(cls, store, choice_match, matches, round_num):
-        choice_match = int(choice_match)
-        match = matches[choice_match - 1]
-        choice_winner = TournamentView.display_match_winner(match)
-        if choice_winner == "1":
-            match.score_a += 1
-        elif choice_winner == "2":
-            match.score_b += 1
+    def next_round(cls, store, selected_tournament):
+        rounds_len = len(selected_tournament.rounds)
+        nb_round = int(selected_tournament.nb_round)
+        if rounds_len < nb_round:
+            round_name = Tournament.next_round(selected_tournament)
+            Tournament.display_round(selected_tournament, round_name)
+            return "next_round", selected_tournament
         else:
-            match.score_a += 0.5
-            match.score_b += 0.5
-        TournamentView.display_result_match(match)
+            TournamentView.display_round(selected_tournament.rounds)
+            return "tournament_management", None
 
-        # Mettre à jour les scores des joueurs dans le store
-        tournament_name = match.tournament_name
-        tournament = TournamentController.find_tournament_by_name(store, tournament_name)
-        tournament.update_player_scores(store, round_num)
+
+
+
+
+
+
+

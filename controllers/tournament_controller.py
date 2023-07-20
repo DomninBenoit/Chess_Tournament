@@ -105,6 +105,8 @@ class TournamentController:
             selected_index = Tournament.get_selected_tournament_index()
             if 0 <= selected_index < len(tournaments):
                 selected_tournament = tournaments[selected_index]
+                for player_id in selected_tournament.players:
+                    selected_tournament.scores[player_id] = 0
                 TournamentView.display_tournament_to_start(selected_tournament)
                 round_name = Tournament.start_tournament(selected_tournament)
                 Tournament.display_round(selected_tournament, round_name)
@@ -120,11 +122,15 @@ class TournamentController:
             return "next_round", selected_tournament
         else:
             TournamentView.display_round(selected_tournament.rounds)
+            TournamentView.display_ranking(selected_tournament)
             return "tournament_management", None
 
 
-
-
+    @classmethod
+    def listing_tournaments(cls, store, route_params):
+        tournaments = cls.list_tournaments(store, route_params)
+        if tournaments:
+            selected_index = Tournament.get_selected_tournament_index()
 
 
 

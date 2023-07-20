@@ -52,7 +52,7 @@ class TournamentView:
 
         print("=== Liste des tournois ===")
         for i, tournament in enumerate(tournaments):
-            print(f"{i + 1}. {tournament.name}")
+            print(f"{i + 1}. {tournament.name} du {tournament.date_start} au {tournament.date_end}")
 
     @classmethod
     def display_selected_tournament(cls, route_params=None):
@@ -148,4 +148,10 @@ class TournamentView:
                     print(f"{match.player_a.firstname} {match.player_a.lastname} : {match.score_a} / {match.score_b} : {match.player_b.firstname} {match.player_b.lastname}")
         input("Appuyez sur une touche pour quitter le tournoi")
 
+    @classmethod
+    def display_ranking(cls, selected_tournament):
+        sorted_dict = dict(sorted(selected_tournament.scores.items(), key=lambda item: item[1], reverse=True))
+        for player in sorted_dict:
+            score = selected_tournament.scores[player]
+            print(f"{player.firstname} {player.lastname} : {score}")
 

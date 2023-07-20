@@ -61,11 +61,11 @@ class Tournament:
 
     def generate_pairs(self):
         Tournament.matches = []
-        sorted_dict = dict(sorted(self.scores.items(), key=lambda item: item[1], reverse=True))
         nb_players = len(self.players)
         if nb_players % 2 != 0:
             equilibrage_player = Player("Equilibrage", "", "", "")  # Crée un objet Player pour "Equilibrage"
             self.players.append(equilibrage_player)
+            self.scores[equilibrage_player] = 0
 
         if self.current_round == 1:
             random.shuffle(self.players)
@@ -84,7 +84,7 @@ class Tournament:
 
             return Tournament.matches
         elif self.current_round > 1:
-
+            sorted_dict = dict(sorted(self.scores.items(), key=lambda item: (item[1], random.random()), reverse=True))
             sorted_players = list(sorted_dict.keys())
             print(sorted_dict)
             for i in range(0, nb_players, 2):
@@ -125,8 +125,6 @@ class Tournament:
 
     def display_round(self, round_name):
         Tournament.generate_pairs(self)
-        for player_id in self.players:
-            self.scores[player_id] = 0
         count = len(self.matches)
         while count > 0:
             Tournament.round(self, round_name)

@@ -12,8 +12,11 @@ class Application:
     routes = {
         "homepage": HomePageController.dispatch,
         "players_management": PlayerController.list,
-        "create_player": PlayerController.create,
         "tournament_management": TournamentController.list,
+        "rapports": HomePageController.list_rapport,
+        #"list_players": PlayerController.list_players,
+        "list_tournaments": TournamentController.list_tournaments,
+        "create_player": PlayerController.create,
         "add_tournament": TournamentController.create,
         "add_player_in_tournament": TournamentController.add_player_to_tournament,
         "details_tournaments": TournamentController.display_data,

@@ -14,12 +14,13 @@ class Application:
         "players_management": PlayerController.list,
         "tournament_management": TournamentController.list,
         "rapports": HomePageController.list_rapport,
-        #"list_players": PlayerController.list_players,
-        "list_tournaments": TournamentController.list_tournaments,
+        "list_players": PlayerController.list_players,
+        "listing_tournaments": TournamentController.listing_tournaments,
         "create_player": PlayerController.create,
         "add_tournament": TournamentController.create,
         "add_player_in_tournament": TournamentController.add_player_to_tournament,
-        "details_tournaments": TournamentController.display_data,
+        "list_players_in_tournament": TournamentController.list_players_in_tournament,
+        "list_round_and_match_in_tournament": TournamentController.list_round_and_match_in_tournament,
         "start_tournament": TournamentController.start_tournament,
         "next_round": TournamentController.next_round,
     }
@@ -58,8 +59,6 @@ class Application:
 
     def run(self):
         while not self.exit:
-            # Clear the shell output
-            sp.call('clear', shell=True)
 
             # Get the controller method that should handle our current route
             controller_method = self.routes[self.route]

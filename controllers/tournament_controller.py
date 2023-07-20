@@ -15,9 +15,9 @@ class TournamentController:
         elif choice == "3":
             return "delete_tournament", None
         elif choice == "4":
-            return "details_tournaments", None
-        elif choice == "5":
             return "start_tournament", None
+        elif choice.lower() == "q":
+            return "quit", None
         else:
             return "tournament_management", None
 
@@ -31,6 +31,7 @@ class TournamentController:
 
         return "tournament_management", None
 
+    # a passer dans models
     @classmethod
     def find_tournament_by_name(cls, store, name):
         for tournament in store["tournaments"]:
@@ -38,6 +39,7 @@ class TournamentController:
                 return tournament
         return None
 
+    # a passer dans models
     @classmethod
     def register(cls, store, tournament_name, player):
         tournament = cls.find_tournament_by_name(store, tournament_name)
@@ -66,6 +68,7 @@ class TournamentController:
 
         return "tournament_management", None
 
+    # a passer dans models
     @classmethod
     def add_player(cls, tournament_name, store, route_params):
         player_id = TournamentView.get_player_id()
@@ -85,6 +88,7 @@ class TournamentController:
             PlayerView.display_player_not_found()
             return "tournament_management", None
 
+    # a passer dans models
     @classmethod
     def display_data(cls, store, route_params=None):
         TournamentView.display_data(store["tournaments"])
@@ -123,15 +127,29 @@ class TournamentController:
         else:
             TournamentView.display_round(selected_tournament.rounds)
             TournamentView.display_ranking(selected_tournament)
-            return "tournament_management", None
-
+            return "homepage", None
 
     @classmethod
-    def listing_tournaments(cls, store, route_params):
+    def listing_tournaments(cls, store, route_params=None):
+        tournaments = store["tournaments"]
+        TournamentView.list_tournaments(tournaments)
+        return "homepage", None
+
+    @classmethod
+    def list_players_in_tournament(cls, store, route_params=None):
         tournaments = cls.list_tournaments(store, route_params)
         if tournaments:
             selected_index = Tournament.get_selected_tournament_index()
+            selected_tournament = tournaments[selected_index]
+            players = selected_tournament.players
+            PlayerView.list_players(players)
+            return "homepage", None
 
-
-
-
+    @classmethod
+    def list_round_and_match_in_tournament(cls, store, route_params=None):
+        tournaments = cls.list_tournaments(store, route_params)
+        if tournaments:
+            selected_index = Tournament.get_selected_tournament_index()
+            selected_tournament = tournaments[selected_index]
+            TournamentView.list_round_in_tournament(selected_tournament.rounds)
+            return "homepage", None

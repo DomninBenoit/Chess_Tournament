@@ -139,3 +139,23 @@ class Tournament:
             TournamentView.display_invalid_input()
             return None
 
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "place": self.place,
+            "date_start": self.date_start,
+            "date_end": self.date_end,
+            "nb_round": self.nb_round,
+            "players": [player.to_dict() for player in self.players],
+            "rounds": [round.to_dict() for round in self.rounds],
+        }
+
+    @classmethod
+    def from_dict(cls, tournament_dict):
+        name = tournament_dict["name"]
+        place = tournament_dict["place"]
+        date_start = tournament_dict["date_start"]
+        date_end = tournament_dict["date_end"]
+        rounds = [Round.from_dict(round_dict) for round_dict in tournament_dict["rounds"]]
+        players = [Player.from_dict(player_dict) for player_dict in tournament_dict["players"]]
+        return cls(name, place, date_start, date_end, rounds=rounds, player_ids=players)

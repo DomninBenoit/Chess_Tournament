@@ -4,8 +4,8 @@ class TournamentView:
         print("1. Creation Tournoi")
         print("2. Ajout joueur au tournoi")
         print("3. Supprimer tournoi")
-        print("4. Afficher les tournoi")
-        print("5. Lancer un tournoi")
+        print("4. Lancer un tournoi")
+        print("Q. Exit\n")
 
         choice = input("Choice:")
 
@@ -52,7 +52,7 @@ class TournamentView:
 
         print("=== Liste des tournois ===")
         for i, tournament in enumerate(tournaments):
-            print(f"{i + 1}. {tournament.name} du {tournament.date_start} au {tournament.date_end}")
+            print(f"{i + 1}. {tournament.name}")
 
     @classmethod
     def display_selected_tournament(cls, route_params=None):
@@ -155,3 +155,22 @@ class TournamentView:
             score = selected_tournament.scores[player]
             print(f"{player.firstname} {player.lastname} : {score}")
 
+    @classmethod
+    def list_tournaments(cls, tournaments):
+        sorted_tournament = sorted(tournaments, key=lambda tournament: f"{tournament.name.capitalize()}")
+        for tournament in sorted_tournament:
+            print(f"{tournament.name.capitalize()}  du {tournament.date_start} au {tournament.date_end}")
+
+        input("Appuyez sur une touche pour quitter la liste")
+
+    @classmethod
+    def list_round_in_tournament(cls, rounds):
+        if not rounds:
+            print("Le tournoi n'a pas encore débuté")
+        else:
+            for round_obj in rounds:
+                print(f"Round : {round_obj.name}")
+                for matches in round_obj.match_list:
+                    for match in matches:
+                        print(f"{match.player_a.firstname} {match.player_a.lastname} : {match.score_a} / {match.score_b} : {match.player_b.firstname} {match.player_b.lastname}")
+            input("Appuyez sur une touche pour quitter le tournoi")

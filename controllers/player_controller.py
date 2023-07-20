@@ -8,12 +8,14 @@ class PlayerController:
     players = []
 
     @classmethod
-    def list(cls, route_params=None):
+    def list(cls, store, route_params=None):
         choice = PlayerView.display_list()
         if choice == "1":
             return "create_player", None
+        elif choice.lower() == "q":
+            return "quit", None
         else:
-            return "tournament_management", None
+            return "homepage", None
 
     @classmethod
     def create(cls, route_params=None):
@@ -28,3 +30,9 @@ class PlayerController:
             PlayersJson.save_player(cls.players)
 
         return "player_management", None
+
+    @classmethod
+    def list_players(cls, store, route_params=None):
+        players = store["players"]
+        PlayerView.list_players(players)
+        return "homepage", None

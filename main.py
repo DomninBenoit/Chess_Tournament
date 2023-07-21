@@ -1,10 +1,8 @@
 from controllers.home_controller import HomePageController
 from controllers.tournament_controller import TournamentController
 from controllers.player_controller import PlayerController
+from data.json_utils import JsonUtils
 from models.player import Player
-import subprocess as sp
-
-from models.round import Round
 from models.tournament import Tournament
 
 
@@ -74,6 +72,8 @@ class Application:
             # If the controller returned "quit", end the loop
             if next_route == "quit":
                 self.exit = True
+
+        JsonUtils.save_store(self.store)
 
 
 if __name__ == "__main__":

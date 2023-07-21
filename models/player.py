@@ -11,3 +11,9 @@ class Player:
                f"Nom: {self.lastname}\n" \
                f"Date de naissance: {self.date_of_birth}\n" \
                f"Id national: {self.national_id}\n"
+
+    def to_dict(self):
+        return {
+            "national_id": self.national_id
+        }
+

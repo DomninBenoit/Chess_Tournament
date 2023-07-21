@@ -13,3 +13,11 @@ class Match:
                f"Player B: {self.player_b}\n" \
                f"Score A: {self.score_a}\n" \
                f"Score B: {self.score_b}"
+
+    def to_dict(self):
+        return {
+            "player_a": {"national_id": self.player_a.national_id},
+            "player_b": {"national_id": self.player_b.national_id},
+            "score_a": self.score_a,
+            "score_b": self.score_b,
+        }

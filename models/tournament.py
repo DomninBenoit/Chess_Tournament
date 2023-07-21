@@ -158,4 +158,9 @@ class Tournament:
         date_end = tournament_dict["date_end"]
         rounds = [Round.from_dict(round_dict) for round_dict in tournament_dict["rounds"]]
         players = [Player.from_dict(player_dict) for player_dict in tournament_dict["players"]]
-        return cls(name, place, date_start, date_end, rounds=rounds, player_ids=players)
+        tournament = cls(name, place, date_start, date_end)
+        tournament.rounds = rounds
+        tournament.players = players
+        return tournament
+
+

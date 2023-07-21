@@ -4,7 +4,7 @@ from views.player_views import PlayerView
 
 
 class TournamentController:
-    
+
     @classmethod
     def list(cls, store, route_params=None):
         choice = TournamentView.display_list()

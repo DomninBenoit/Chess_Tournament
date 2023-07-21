@@ -3,7 +3,6 @@ class TournamentView:
     def display_list(cls, route_params=None):
         print("1. Creation Tournoi")
         print("2. Ajout joueur au tournoi")
-        print("3. Supprimer tournoi")
         print("4. Lancer un tournoi")
         print("Q. Exit\n")
 

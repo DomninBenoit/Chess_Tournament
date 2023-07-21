@@ -13,13 +13,11 @@ class TournamentController:
         elif choice == "2":
             return "add_player_in_tournament", None
         elif choice == "3":
-            return "delete_tournament", None
-        elif choice == "4":
             return "start_tournament", None
         elif choice.lower() == "q":
             return "quit", None
         else:
-            return "tournament_management", None
+            return "homepage", None
 
     @classmethod
     def create(cls, store, route_params=None):

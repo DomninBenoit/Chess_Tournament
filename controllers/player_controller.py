@@ -1,4 +1,3 @@
-from data.json_utils import PlayersJson
 from models.player import Player
 from views.player_views import PlayerView
 import os
@@ -18,18 +17,12 @@ class PlayerController:
             return "homepage", None
 
     @classmethod
-    def create(cls, route_params=None):
+    def create(cls, store, route_params=None):
         data = PlayerView.create_player_form()
         player = Player(**data)
-        if os.path.getsize('data/tournaments.json') == 0:
-            cls.players.append(player)
-            PlayersJson.save_player(cls.players)
-        else:
-            PlayersJson.load_players()
-            cls.players.append(player)
-            PlayersJson.save_player(cls.players)
+        store["players"].append(player)
 
-        return "player_management", None
+        return "players_management", None
 
     @classmethod
     def list_players(cls, store, route_params=None):

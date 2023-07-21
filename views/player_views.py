@@ -5,9 +5,8 @@ class PlayerView:
         print("Q. Exit\n")
 
         choice = input("Choice:")
-        extra_info = None
 
-        return choice, extra_info
+        return choice
 
     @classmethod
     def create_player_form(cls, route_params=None):

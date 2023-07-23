@@ -16,8 +16,8 @@ class Match:
 
     def to_dict(self):
         return {
-            "player_a": {"national_id": self.player_a.national_id},
-            "player_b": {"national_id": self.player_b.national_id},
+            "player_a": self.player_a.national_id,
+            "player_b": self.player_b.national_id,
             "score_a": self.score_a,
             "score_b": self.score_b,
         }

@@ -142,9 +142,8 @@ class TournamentView:
         print("Le Tournoi est maintenant terminé")
         for round_obj in rounds:
             print(f"Round : {round_obj.name}")
-            for matches in round_obj.match_list:
-                for match in matches:
-                    print(f"{match.player_a.firstname} {match.player_a.lastname} : {match.score_a} / {match.score_b} : {match.player_b.firstname} {match.player_b.lastname}")
+            for match in round_obj.match_list:
+                print(f"{match.player_a.firstname} {match.player_a.lastname} : {match.score_a} / {match.score_b} : {match.player_b.firstname} {match.player_b.lastname}")
         input("Appuyez sur une touche pour quitter le tournoi")
 
     @classmethod

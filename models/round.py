@@ -19,7 +19,7 @@ class Round:
     def to_dict(self):
         return {
             "name": self.name,
-            "start_date": self.start_date,
-            "end_date": self.end_date if self.end_date else None,
+            "start_date": self.start_date.strftime('%Y-%m-%d %H:%M:%S'),
+            "end_date": self.end_date.strftime('%Y-%m-%d %H:%M:%S') if self.end_date else None,
             "match_list": [match.to_dict() for match in self.match_list],
         }

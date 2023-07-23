@@ -26,7 +26,7 @@ class Tournament:
                f"Date début: {self.date_start}\n" \
                f"Date de fin: {self.date_end}\n"
 
-    # Méthodes pour ajout et suppression de joueurs dans un tournoi
+    # Méthodes pour ajout de joueurs dans un tournoi
     def add_player(self, player):
         if player not in self.players:
             self.players.append(player)
@@ -60,7 +60,7 @@ class Tournament:
             return None
 
     def generate_pairs(self):
-        Tournament.matches = []
+        self.matches = []
         nb_players = len(self.players)
         if nb_players % 2 != 0:
             equilibrage_player = Player("Equilibrage", "", "", "")  # Crée un objet Player pour "Equilibrage"
@@ -74,15 +74,16 @@ class Tournament:
                 player_a = self.players[i]
                 player_b = self.players[i + 1]
                 match = Match(self.name, player_a, player_b)
-                Tournament.matches.append(match)
+                self.matches.append(match)
 
             current_round = self.get_current_round()
             if current_round:
-                current_round.add_match(Tournament.matches)
+                for match in self.matches:
+                    current_round.add_match(match)
             else:
                 print("Le tournoi n'a pas encore commencé.")
 
-            return Tournament.matches
+            return self.matches
         elif self.current_round > 1:
             sorted_dict = dict(sorted(self.scores.items(), key=lambda item: (item[1], random.random()), reverse=True))
             sorted_players = list(sorted_dict.keys())
@@ -91,11 +92,12 @@ class Tournament:
                 player_a = sorted_players[i]
                 player_b = sorted_players[i + 1]
                 match = Match(self.name, player_a, player_b)
-                Tournament.matches.append(match)
+                self.matches.append(match)
 
             current_round = self.get_current_round()
             if current_round:
-                current_round.add_match(Tournament.matches)
+                for match in self.matches:
+                    current_round.add_match(match)
 
         else:
             print("Le numéro de round spécifié n'est pas valide.")
@@ -118,17 +120,21 @@ class Tournament:
             self.scores[match.player_b] += 0.5
 
     def round(self, round_name):
-        matches = self.matches
-        TournamentView.display_list_match_in_round(matches, round_name)
-        choice_match = TournamentView.display_match(matches)
-        Tournament.choice_match_winner(self, choice_match, matches)
+        current_round = self.get_current_round()
+        if current_round:
+            matches = current_round.match_list
+            TournamentView.display_list_match_in_round(matches, round_name)
+            choice_match = TournamentView.display_match(matches)
+            Tournament.choice_match_winner(self, choice_match, matches)
 
     def display_round(self, round_name):
-        Tournament.generate_pairs(self)
-        count = len(self.matches)
-        while count > 0:
-            Tournament.round(self, round_name)
-            count -= 1
+        current_round = self.get_current_round()
+        if current_round:
+            Tournament.generate_pairs(self)
+            count = len(current_round.match_list)
+            while count > 0:
+                Tournament.round(self, round_name)
+                count -= 1
 
     @staticmethod
     def get_selected_tournament_index():

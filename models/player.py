@@ -14,6 +14,17 @@ class Player:
 
     def to_dict(self):
         return {
-            "national_id": self.national_id
+            "national_id": self.national_id,
+            "firstname": self.firstname,
+            "lastname": self.lastname,
+            "date_of_birth": self.date_of_birth,
         }
 
+    @classmethod
+    def from_dict(cls, player_dict):
+        national_id = player_dict["national_id"]
+        firstname = player_dict["firstname"]
+        lastname = player_dict["lastname"]
+        date_of_birth = player_dict["date_of_birth"]
+        player = cls(firstname, lastname, date_of_birth, national_id)
+        return player

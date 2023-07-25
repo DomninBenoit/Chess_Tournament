@@ -22,16 +22,18 @@ class JsonUtils:
 
     @classmethod
     def load_store(cls, store):
-        with open('players.json', 'r') as infile:
+        players_dict = {}
+        with open('data/players.json', 'r') as infile:
             json_data = json.load(infile)
 
             for player_dict in json_data:
                 player = Player.from_dict(player_dict)
+                players_dict[player.national_id] = player
                 store["players"].append(player)
 
-        with open('tournament.json', 'r') as infile:
+        with open('data/tournaments.json', 'r') as infile:
             json_data = json.load(infile)
 
             for tournament_dict in json_data:
-                tournament = Tournament.from_dict(tournament_dict, store)
+                tournament = Tournament.from_dict(tournament_dict, players_dict)
                 store["tournaments"].append(tournament)

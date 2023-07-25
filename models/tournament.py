@@ -63,7 +63,7 @@ class Tournament:
         self.matches = []
         nb_players = len(self.players)
         if nb_players % 2 != 0:
-            equilibrage_player = Player("Equilibrage", "", "", "")  # Crée un objet Player pour "Equilibrage"
+            equilibrage_player = Player("Equilibrage", "", "", "FICTIF")  # Crée un objet Player pour "Equilibrage"
             self.players.append(equilibrage_player)
             self.scores[equilibrage_player] = 0
 
@@ -73,7 +73,7 @@ class Tournament:
             for i in range(0, nb_players, 2):
                 player_a = self.players[i]
                 player_b = self.players[i + 1]
-                match = Match(self.name, player_a, player_b)
+                match = Match(player_a, player_b)
                 self.matches.append(match)
 
             current_round = self.get_current_round()
@@ -91,7 +91,7 @@ class Tournament:
             for i in range(0, nb_players, 2):
                 player_a = sorted_players[i]
                 player_b = sorted_players[i + 1]
-                match = Match(self.name, player_a, player_b)
+                match = Match(player_a, player_b)
                 self.matches.append(match)
 
             current_round = self.get_current_round()
@@ -152,21 +152,24 @@ class Tournament:
             "date_start": self.date_start,
             "date_end": self.date_end,
             "nb_round": self.nb_round,
-            "players": [player.to_dict() for player in self.players],
+            "players": [player.national_id for player in self.players],
             "rounds": [round.to_dict() for round in self.rounds],
         }
 
     @classmethod
-    def from_dict(cls, tournament_dict):
+    def from_dict(cls, tournament_dict, players_dict):
         name = tournament_dict["name"]
         place = tournament_dict["place"]
         date_start = tournament_dict["date_start"]
         date_end = tournament_dict["date_end"]
-        rounds = [Round.from_dict(round_dict) for round_dict in tournament_dict["rounds"]]
-        players = [Player.from_dict(player_dict) for player_dict in tournament_dict["players"]]
-        tournament = cls(name, place, date_start, date_end)
-        tournament.rounds = rounds
+        nb_round = tournament_dict["nb_round"]
+        rounds = [Round.from_dict(round_dict, players_dict) for round_dict in tournament_dict["rounds"]]
+        players_national_ids = tournament_dict["players"]
+        players = [players_dict[national_id] for national_id in players_national_ids]
+        tournament = cls(name, place, date_start, date_end, nb_round)
         tournament.players = players
+        tournament.rounds = rounds
+
         return tournament
 
 

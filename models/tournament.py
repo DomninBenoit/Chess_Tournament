@@ -87,12 +87,25 @@ class Tournament:
         elif self.current_round > 1:
             sorted_dict = dict(sorted(self.scores.items(), key=lambda item: (item[1], random.random()), reverse=True))
             sorted_players = list(sorted_dict.keys())
-            print(sorted_dict)
-            for i in range(0, nb_players, 2):
+
+            # Create a set to keep track of players already matched in this round
+            matched_players = set()
+
+            for i in range(0, nb_players - 1):  # Note the change to avoid index out of range in the last iteration
                 player_a = sorted_players[i]
-                player_b = sorted_players[i + 1]
-                match = Match(player_a, player_b)
-                self.matches.append(match)
+                if player_a in matched_players:
+                    continue  # Skip this iteration if player_a is already matched
+
+                # Find the next available player_b
+                for j in range(i + 1, nb_players):
+                    player_b = sorted_players[j]
+                    if player_b not in matched_players and not self.match_already_played(player_a, player_b,
+                                                                                         self.rounds):
+                        matched_players.add(player_a)
+                        matched_players.add(player_b)
+                        match = Match(player_a, player_b)
+                        self.matches.append(match)
+                        break
 
             current_round = self.get_current_round()
             if current_round:
@@ -144,6 +157,15 @@ class Tournament:
         except ValueError:
             TournamentView.display_invalid_input()
             return None
+
+    @staticmethod
+    def match_already_played(player_a, player_b, rounds):
+        for round_obj in rounds:
+            for match in round_obj.match_list:
+                players_in_match = [match.player_a, match.player_b]
+                if player_a in players_in_match and player_b in players_in_match:
+                    return True
+        return False
 
     def to_dict(self):
         return {

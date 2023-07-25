@@ -1,0 +1,18 @@
+# Fichiers générés par l'environnement de développement
+__pycache__/
+.pytest_cache/
+
+# Fichiers de logs
+*.log
+
+# Fichiers d'environnement
+.env
+
+# Fichiers de configuration spécifiques à votre IDE
+.vscode/
+.idea/
+
+# Fichiers de sortie des outils de construction
+dist/
+build/
+data/*.json

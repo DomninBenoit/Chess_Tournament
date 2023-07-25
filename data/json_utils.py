@@ -1,3 +1,5 @@
+import os
+
 from models.tournament import Tournament
 from models.player import Player
 import json
@@ -22,6 +24,10 @@ class JsonUtils:
 
     @classmethod
     def load_store(cls, store):
+        if not os.path.exists('data/players.json'):
+            print("Le fichier 'data/players.json' n'existe pas. Le chargement ne peut pas être effectué.")
+            return
+
         players_dict = {}
         with open('data/players.json', 'r') as infile:
             json_data = json.load(infile)
@@ -30,6 +36,10 @@ class JsonUtils:
                 player = Player.from_dict(player_dict)
                 players_dict[player.national_id] = player
                 store["players"].append(player)
+
+        if not os.path.exists('data/tournaments.json'):
+            print("Le fichier 'data/tournaments.json' n'existe pas. Le chargement ne peut pas être effectué.")
+            return
 
         with open('data/tournaments.json', 'r') as infile:
             json_data = json.load(infile)

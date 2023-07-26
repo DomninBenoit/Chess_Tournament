@@ -51,8 +51,7 @@ class TournamentView:
 
         print("=== Liste des tournois ===")
         for i, tournament in enumerate(tournaments):
-            if not tournament.rounds:
-                print(f"{i + 1}. {tournament.name}")
+            print(f"{i + 1}. {tournament.name}")
 
     @classmethod
     def display_selected_tournament(cls, route_params=None):

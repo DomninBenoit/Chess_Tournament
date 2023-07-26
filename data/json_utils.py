@@ -11,7 +11,7 @@ class JsonUtils:
         with open('data/players.json', 'w') as outfile:
             player_dicts = []
             for player in store["players"]:
-                player_dicts.append(player.to_dict())
+                    player_dicts.append(player.to_dict())
 
             json.dump(player_dicts, outfile, indent=4)
 

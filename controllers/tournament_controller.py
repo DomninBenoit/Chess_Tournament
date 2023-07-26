@@ -29,7 +29,6 @@ class TournamentController:
 
         return "tournament_management", None
 
-    # a passer dans models
     @classmethod
     def find_tournament_by_name(cls, store, name):
         for tournament in store["tournaments"]:
@@ -37,7 +36,6 @@ class TournamentController:
                 return tournament
         return None
 
-    # a passer dans models
     @classmethod
     def register(cls, store, tournament_name, player):
         tournament = cls.find_tournament_by_name(store, tournament_name)
@@ -78,15 +76,12 @@ class TournamentController:
                 break
 
         if player is not None:
-            # L'ID du joueur existe, procéder à l'enregistrement
             cls.register(store, tournament_name, player)
             return "tournament_management", None
         else:
-            # L'ID du joueur n'existe pas, afficher un message d'erreur
             PlayerView.display_player_not_found()
             return "tournament_management", None
 
-    # a passer dans models
     @classmethod
     def display_data(cls, store, route_params=None):
         TournamentView.display_data(store["tournaments"])

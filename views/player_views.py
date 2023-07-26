@@ -24,9 +24,11 @@ class PlayerView:
 
     @classmethod
     def list_players(cls, players):
-        sorted_players = sorted(players, key=lambda player: f"{player.lastname.capitalize()} {player.firstname.capitalize()}")
+        sorted_players = sorted(players,
+                                key=lambda player:
+                                f"{player.lastname.capitalize()} "
+                                f"{player.firstname.capitalize()}")
         for player in sorted_players:
             print(f"{player.lastname.upper()} {player.firstname.capitalize()}")
 
         input("Appuyez sur une touche pour quitter la liste")
-

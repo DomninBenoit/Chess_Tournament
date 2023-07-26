@@ -1,4 +1,3 @@
-from models.player import Player
 
 class Match:
 

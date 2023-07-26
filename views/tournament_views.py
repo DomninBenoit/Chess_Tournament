@@ -18,7 +18,7 @@ class TournamentView:
             "place": input("Lieu du tournoi : "),
             "date_start": input("Date de début (jj/mm/aaaa) : "),
             "date_end": input("Date de fin (jj/mm/aaaa) : "),
-            "nb_round": int(input("Nombre de rounds (facultatif - par défaut : 4) : "))
+            "nb_round": int(input("Nombre de rounds (par défaut : 4) : "))
         }
 
     @classmethod
@@ -101,15 +101,19 @@ class TournamentView:
         match_number = 1
         for match in matches:
             if match.score_a == 1:
-                result = f"{match.player_a.firstname} {match.player_a.lastname} wins"
+                result = f"{match.player_a.firstname} " \
+                         f"{match.player_a.lastname} wins"
             elif match.score_b == 1:
-                result = f"{match.player_b.firstname} {match.player_b.lastname} wins"
+                result = f"{match.player_b.firstname} " \
+                         f"{match.player_b.lastname} wins"
             elif match.score_a == 0.5 and match.score_b == 0.5:
                 result = "egality"
             else:
                 result = "waiting for result"
             print(
-                f"match {match_number} : {match.player_a.firstname} {match.player_a.lastname} vs {match.player_b.firstname} {match.player_b.lastname} - {result}")
+                f"match {match_number} : {match.player_a.firstname} "
+                f"{match.player_a.lastname} vs {match.player_b.firstname} "
+                f"{match.player_b.lastname} - {result}")
             match_number += 1
         print("")
 
@@ -144,21 +148,27 @@ class TournamentView:
         for round_obj in rounds:
             print(f"Round : {round_obj.name}")
             for match in round_obj.match_list:
-                print(f"{match.player_a.firstname} {match.player_a.lastname} : {match.score_a} / {match.score_b} : {match.player_b.firstname} {match.player_b.lastname}")
+                print(f"{match.player_a.firstname} {match.player_a.lastname}"
+                      f" : {match.score_a} / {match.score_b} : "
+                      f"{match.player_b.firstname} {match.player_b.lastname}")
         input("Appuyez sur une touche pour quitter le tournoi")
 
     @classmethod
     def display_ranking(cls, selected_tournament):
-        sorted_dict = dict(sorted(selected_tournament.scores.items(), key=lambda item: item[1], reverse=True))
+        sorted_dict = dict(sorted(selected_tournament.scores.items(),
+                                  key=lambda item: item[1], reverse=True))
         for player in sorted_dict:
             score = selected_tournament.scores[player]
             print(f"{player.firstname} {player.lastname} : {score}")
 
     @classmethod
     def list_tournaments(cls, tournaments):
-        sorted_tournament = sorted(tournaments, key=lambda tournament: f"{tournament.name.capitalize()}")
+        sorted_tournament = sorted(tournaments,
+                                   key=lambda tournament:
+                                   f"{tournament.name.capitalize()}")
         for tournament in sorted_tournament:
-            print(f"{tournament.name.capitalize()}  du {tournament.date_start} au {tournament.date_end}")
+            print(f"{tournament.name.capitalize()}  "
+                  f"du {tournament.date_start} au {tournament.date_end}")
 
         input("Appuyez sur une touche pour quitter la liste")
 
@@ -170,5 +180,9 @@ class TournamentView:
             for round_obj in rounds:
                 print(f"Round : {round_obj.name}")
                 for match in round_obj.match_list:
-                    print(f"{match.player_a.firstname} {match.player_a.lastname} : {match.score_a} / {match.score_b} : {match.player_b.firstname} {match.player_b.lastname}")
+                    print(f"{match.player_a.firstname} "
+                          f"{match.player_a.lastname} : "
+                          f"{match.score_a} / {match.score_b} : "
+                          f"{match.player_b.firstname} "
+                          f"{match.player_b.lastname}")
             input("Appuyez sur une touche pour quitter le tournoi")

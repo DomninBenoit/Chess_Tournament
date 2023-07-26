@@ -9,7 +9,8 @@ from views.tournament_views import TournamentView
 class Tournament:
     matches = []
 
-    def __init__(self, name, place, date_start, date_end, nb_round=4, player_ids=None, rounds=None) -> None:
+    def __init__(self, name, place, date_start, date_end,
+                 nb_round=4, player_ids=None, rounds=None) -> None:
         self.name = name
         self.place = place
         self.date_start = date_start
@@ -26,7 +27,6 @@ class Tournament:
                f"Date début: {self.date_start}\n" \
                f"Date de fin: {self.date_end}\n"
 
-    # Méthodes pour ajout de joueurs dans un tournoi
     def add_player(self, player):
         if player not in self.players:
             self.players.append(player)
@@ -39,7 +39,6 @@ class Tournament:
         else:
             print("Le joueur n'est pas inscrit au tournoi.")
 
-    # Méthodes pour gérer les tours
     def start_tournament(self):
         round_name = f"Round {self.current_round}"
         round_obj = Round(self.current_round)
@@ -63,7 +62,7 @@ class Tournament:
         self.matches = []
         nb_players = len(self.players)
         if nb_players % 2 != 0:
-            equilibrage_player = Player("Equilibrage", "", "", "FICTIF")  # Crée un objet Player pour "Equilibrage"
+            equilibrage_player = Player("Equilibrage", "", "", "FICTIF")
             self.players.append(equilibrage_player)
             self.scores[equilibrage_player] = 0
 
@@ -85,22 +84,23 @@ class Tournament:
 
             return self.matches
         elif self.current_round > 1:
-            sorted_dict = dict(sorted(self.scores.items(), key=lambda item: (item[1], random.random()), reverse=True))
+            sorted_dict = dict(sorted(self.scores.items(),
+                                      key=lambda item: (item[1],
+                                                        random.random()),
+                                      reverse=True))
             sorted_players = list(sorted_dict.keys())
-
-            # Create a set to keep track of players already matched in this round
             matched_players = set()
 
-            for i in range(0, nb_players - 1):  # Note the change to avoid index out of range in the last iteration
+            for i in range(0, nb_players - 1):
                 player_a = sorted_players[i]
                 if player_a in matched_players:
-                    continue  # Skip this iteration if player_a is already matched
+                    continue
 
-                # Find the next available player_b
                 for j in range(i + 1, nb_players):
                     player_b = sorted_players[j]
-                    if player_b not in matched_players and not self.match_already_played(player_a, player_b,
-                                                                                         self.rounds):
+                    if player_b not in matched_players and not \
+                            self.match_already_played(player_a,
+                                                      player_b, self.rounds):
                         matched_players.add(player_a)
                         matched_players.add(player_b)
                         match = Match(player_a, player_b)
@@ -163,7 +163,8 @@ class Tournament:
         for round_obj in rounds:
             for match in round_obj.match_list:
                 players_in_match = [match.player_a, match.player_b]
-                if player_a in players_in_match and player_b in players_in_match:
+                if player_a in players_in_match and \
+                        player_b in players_in_match:
                     return True
         return False
 
@@ -185,13 +186,13 @@ class Tournament:
         date_start = tournament_dict["date_start"]
         date_end = tournament_dict["date_end"]
         nb_round = tournament_dict["nb_round"]
-        rounds = [Round.from_dict(round_dict, players_dict) for round_dict in tournament_dict["rounds"]]
+        rounds = [Round.from_dict(round_dict, players_dict) for
+                  round_dict in tournament_dict["rounds"]]
         players_national_ids = tournament_dict["players"]
-        players = [players_dict[national_id] for national_id in players_national_ids]
+        players = [players_dict[national_id] for
+                   national_id in players_national_ids]
         tournament = cls(name, place, date_start, date_end, nb_round)
         tournament.players = players
         tournament.rounds = rounds
 
         return tournament
-
-

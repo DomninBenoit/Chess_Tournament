@@ -25,7 +25,8 @@ class JsonUtils:
     @classmethod
     def load_store(cls, store):
         if not os.path.exists('data/players.json'):
-            print("Le fichier 'data/players.json' n'existe pas. Le chargement ne peut pas être effectué.")
+            print("Le fichier 'data/players.json' n'existe pas. "
+                  "Le chargement ne peut pas être effectué.")
             return
 
         players_dict = {}
@@ -38,12 +39,14 @@ class JsonUtils:
                 store["players"].append(player)
 
         if not os.path.exists('data/tournaments.json'):
-            print("Le fichier 'data/tournaments.json' n'existe pas. Le chargement ne peut pas être effectué.")
+            print("Le fichier 'data/tournaments.json' n'existe pas. "
+                  "Le chargement ne peut pas être effectué.")
             return
 
         with open('data/tournaments.json', 'r') as infile:
             json_data = json.load(infile)
 
             for tournament_dict in json_data:
-                tournament = Tournament.from_dict(tournament_dict, players_dict)
+                tournament = Tournament.from_dict(tournament_dict,
+                                                  players_dict)
                 store["tournaments"].append(tournament)

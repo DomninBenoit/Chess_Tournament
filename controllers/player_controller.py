@@ -1,6 +1,5 @@
 from models.player import Player
 from views.player_views import PlayerView
-import os
 
 
 class PlayerController:

@@ -2,8 +2,6 @@ from controllers.home_controller import HomePageController
 from controllers.tournament_controller import TournamentController
 from controllers.player_controller import PlayerController
 from data.json_utils import JsonUtils
-from models.player import Player
-from models.tournament import Tournament
 
 
 class Application:
@@ -16,9 +14,12 @@ class Application:
         "listing_tournaments": TournamentController.listing_tournaments,
         "create_player": PlayerController.create,
         "add_tournament": TournamentController.create,
-        "add_player_in_tournament": TournamentController.add_player_to_tournament,
-        "list_players_in_tournament": TournamentController.list_players_in_tournament,
-        "list_round_and_match_in_tournament": TournamentController.list_round_and_match_in_tournament,
+        "add_player_in_tournament":
+            TournamentController.add_player_to_tournament,
+        "list_players_in_tournament":
+            TournamentController.list_players_in_tournament,
+        "list_round_and_match_in_tournament":
+            TournamentController.list_round_and_match_in_tournament,
         "start_tournament": TournamentController.start_tournament,
         "next_round": TournamentController.next_round,
     }

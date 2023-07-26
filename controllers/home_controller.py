@@ -28,5 +28,3 @@ class HomePageController:
             return "list_round_and_match_in_tournament", None
         elif choice.lower() == "q":
             return "quit", None
-
-

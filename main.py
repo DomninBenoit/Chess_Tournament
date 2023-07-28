@@ -35,24 +35,30 @@ class Application:
         JsonUtils.load_store(self.store),
 
     def run(self):
-        while not self.exit:
+        try:
+            while not self.exit:
+                # Obtenir la méthode du contrôleur qui doit gérer notre route actuelle
+                controller_method = self.routes[self.route]
 
-            # Get the controller method that should handle our current route
-            controller_method = self.routes[self.route]
+                # Appeler la méthode du contrôleur
+                next_route, next_params = controller_method(
+                    self.store, self.route_params
+                )
 
-            # Call the controller method
-            next_route, next_params = controller_method(
-                self.store, self.route_params
-            )
+                # Définir la prochaine route et les paramètres
+                self.route = next_route
+                self.route_params = next_params
 
-            # Set the next route and parameters
-            self.route = next_route
-            self.route_params = next_params
-            # If the controller returned "quit", end the loop
-            if next_route == "quit":
-                self.exit = True
+                # Si le contrôleur a renvoyé "quit", mettre fin à la boucle
+                if next_route == "quit":
+                    self.exit = True
+        except Exception as e:
+            # Capturer toute exception qui s'est produite pendant l'exécution
+            print(f"Une erreur est survenue : {e}")
 
-        JsonUtils.save_store(self.store)
+        finally:
+            # Sauvegarder les données même s'il y a eu une exception ou si la boucle se termine
+            JsonUtils.save_store(self.store)
 
 
 if __name__ == "__main__":
